@@ -1,15 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { CovalentProvider } from "@akbaridria/use-covalent-api";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <App />
+    <CovalentProvider apiKey={process.env.REACT_APP_COVALENT_KEY as string}>
+        <App />
+    </CovalentProvider>
   </React.StrictMode>
 );
 

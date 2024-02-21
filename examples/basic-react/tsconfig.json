@@ -18,14 +18,9 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx",
-    "baseUrl": "src/",
-    "paths": {
-        "hooks": ["src/hooks/*"]
-    }
+    "jsx": "react-jsx"
   },
   "include": [
-    "src",
-    "rollup.config.ts"
+    "src"
   ]
 }
