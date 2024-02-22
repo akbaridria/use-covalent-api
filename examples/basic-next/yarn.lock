@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"@akbaridria/use-covalent-api@github:akbaridria/use-covalent-api":
+  version "0.1.0"
+  resolved "git+ssh://git@github.com/akbaridria/use-covalent-api.git#f3a4348d7583cdd0296288fe061fae627b322b70"
+
 "@next/env@14.1.0":
   version "14.1.0"
   resolved "https://registry.yarnpkg.com/@next/env/-/env-14.1.0.tgz#43d92ebb53bc0ae43dcc64fb4d418f8f17d7a341"

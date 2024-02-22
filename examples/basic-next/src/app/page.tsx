@@ -1,107 +1,128 @@
 "use client";
 
-import Image from "next/image";
-import styles from "./page.module.css";
 import { useState } from "react";
+import type {
+    GetTokenBalancesForWalletAddressQueryParamOpts,
+    Quote,
+} from "@akbaridria/use-covalent-api";
+import { useGetTokenBalanceForAddress } from "@akbaridria/use-covalent-api";
 
 export default function Home() {
-    const [data, setData] = useState(false);
-    console.log(data, setData);
-    return (
-        <main className={styles.main}>
-            <div className={styles.description}>
-                <p>
-                    Get started by editing&nbsp;
-                    <code className={styles.code}>src/app/page.tsx</code>
-                </p>
-                <div>
-                    <a
-                        href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        By{" "}
-                        <Image
-                            src="/vercel.svg"
-                            alt="Vercel Logo"
-                            className={styles.vercelLogo}
-                            width={100}
-                            height={24}
-                            priority
-                        />
-                    </a>
-                </div>
-            </div>
+    const [options, setOption] = useState<
+        GetTokenBalancesForWalletAddressQueryParamOpts | undefined
+    >({ noSpam: true, quoteCurrency: "USD" });
+    const { data, errorDetail, loading, isError } =
+        useGetTokenBalanceForAddress({
+            chainName: "eth-mainnet",
+            walletAddress: "vatalik.eth",
+            options,
+        });
 
-            <div className={styles.center}>
-                <Image
-                    className={styles.logo}
-                    src="/next.svg"
-                    alt="Next.js Logo"
-                    width={180}
-                    height={37}
-                    priority
+    const handleChange = () => {
+        setOption((prev) => {
+            return {
+                ...prev,
+                noSpam: !prev?.noSpam,
+            };
+        });
+    };
+    const handleCurrency = (d: Quote) => {
+        setOption((prev) => {
+            return {
+                ...prev,
+                quoteCurrency: d,
+            };
+        });
+    };
+
+    return (
+        <div>
+            <div>isLoading: {String(loading)}</div>
+            <div>isError: {String(isError)}</div>
+            <div>errordetail : {errorDetail?.errorMessage}</div>
+            <div>noSpam: {String(options?.noSpam)}</div>
+            <div>wallet address: {data?.address}</div>
+            <div>
+                noSpam{" "}
+                <input
+                    type="checkbox"
+                    id="noSpam"
+                    name="noSpam"
+                    value={String(options?.noSpam)}
+                    onChange={handleChange}
+                    checked={options?.noSpam}
                 />
             </div>
-
-            <div className={styles.grid}>
-                <a
-                    href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-                    className={styles.card}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    <h2>
-                        Docs <span>-&gt;</span>
-                    </h2>
-                    <p>
-                        Find in-depth information about Next.js features and
-                        API.
-                    </p>
-                </a>
-
-                <a
-                    href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-                    className={styles.card}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    <h2>
-                        Learn <span>-&gt;</span>
-                    </h2>
-                    <p>
-                        Learn about Next.js in an interactive course
-                        with&nbsp;quizzes!
-                    </p>
-                </a>
-
-                <a
-                    href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-                    className={styles.card}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    <h2>
-                        Templates <span>-&gt;</span>
-                    </h2>
-                    <p>Explore starter templates for Next.js.</p>
-                </a>
-
-                <a
-                    href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-                    className={styles.card}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    <h2>
-                        Deploy <span>-&gt;</span>
-                    </h2>
-                    <p>
-                        Instantly deploy your Next.js site to a shareable URL
-                        with Vercel.
-                    </p>
-                </a>
+            <form>
+                <div className="radio">
+                    <label>
+                        <input
+                            type="radio"
+                            value="option1"
+                            onChange={() => handleCurrency("USD")}
+                            checked={options?.quoteCurrency === "USD"}
+                        />
+                        USD
+                    </label>
+                </div>
+                <div className="radio">
+                    <label>
+                        <input
+                            type="radio"
+                            value="option2"
+                            onChange={() => handleCurrency("CAD")}
+                            checked={options?.quoteCurrency === "CAD"}
+                        />
+                        CAD
+                    </label>
+                </div>
+            </form>
+            <div
+                style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(5, 1fr)",
+                    gap: "1rem",
+                    marginTop: "2rem",
+                }}
+            >
+                <div>No</div>
+                <div>Contract Name</div>
+                <div>Logo URL</div>
+                <div>Balance</div>
+                <div>Balance USd</div>
             </div>
-        </main>
+            {data?.items?.map((item, index) => {
+                return (
+                    <div
+                        key={index}
+                        style={{
+                            display: "grid",
+                            gridTemplateColumns: "repeat(5, 1fr)",
+                            gap: "1rem",
+                            alignItems: "center",
+                        }}
+                    >
+                        <div>{index + 1}</div>
+                        <div>{item.contract_name}</div>
+                        <div>
+                            <img
+                                src={item?.logo_url}
+                                width={50}
+                                height={50}
+                                style={{ borderRadius: "1rem" }}
+                                alt=""
+                            />
+                        </div>
+                        <div>
+                            {new Intl.NumberFormat().format(
+                                Number(item.balance) /
+                                    10 ** item.contract_decimals
+                            )}
+                        </div>
+                        <div>{item.pretty_quote}</div>
+                    </div>
+                );
+            })}
+        </div>
     );
 }
