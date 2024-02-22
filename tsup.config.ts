@@ -17,6 +17,6 @@ export default defineConfig([
         ...commonConfig,
         entry: ["src/index.ts"],
         outDir: "dist",
-        external: ["react", "react-dom", "@covalenthq/client-sdk"],
+        external: ["react", "react-dom"],
     },
 ]);
